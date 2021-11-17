@@ -29,7 +29,7 @@ const vertex = new THREE.Vector3();
 const color = new THREE.Color();
 var mesh;
 var mesh2;
-const start = Date.now();
+
 
 // Initialization and animation function calls
 init();
@@ -184,7 +184,7 @@ function init() {
 
   // Insert completed floor into the scene
   scene.add(floor);
-  for ( let i = 0; i < 5000; i ++ ) {
+  for ( let i = 0; i < 2000; i ++ ) {
   var newMaterial = new THREE.MeshStandardMaterial({
       color: 0xFA962E
     });
@@ -215,7 +215,7 @@ function init() {
     }
   );
 }
-for ( let i = 0; i < 5000; i ++ ) {
+for ( let i = 0; i < 2000; i ++ ) {
   var newMaterial2 = new THREE.MeshStandardMaterial({
       color: 0x97C0FC
     });
@@ -309,8 +309,7 @@ function animate() {
       canJump = true;
     }
   }
-  const timer = Date.now() - start;
-   mesh.rotation.y = timer * 0.0003
+
   prevTime = time;
 
   renderer.render(scene, camera);
