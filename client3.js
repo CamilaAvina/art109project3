@@ -8,6 +8,8 @@ import * as THREE from "./build/three.module.js";
 // Import pointer lock controls
 import { PointerLockControls } from "./src/PointerLockControls.js";
 import { GLTFLoader } from "./src/GLTFLoader.js";
+import { OrbitControls } from './src/OrbitControls.js';
+import { TrackballControls } from './src/TrackballControls.js';
 // Establish variables
 let camera, scene, renderer, controls;
 
@@ -27,6 +29,7 @@ const vertex = new THREE.Vector3();
 const color = new THREE.Color();
 var mesh;
 var mesh2;
+const start = Date.now();
 
 // Initialization and animation function calls
 init();
@@ -45,8 +48,8 @@ function init() {
 
   // Define basic scene parameters
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xffffff);
-  scene.fog = new THREE.Fog(0xffffff, 0, 750);
+  scene.background = new THREE.Color(0xFFD9F9);
+  scene.fog = new THREE.Fog(0xFEF9E7, 0, 650);
 
   // Define scene lighting
   const light = new THREE.HemisphereLight(0xeeeeff, 0x777788, 0.75);
@@ -181,9 +184,9 @@ function init() {
 
   // Insert completed floor into the scene
   scene.add(floor);
-  for ( let i = 0; i < 500; i ++ ) {
+  for ( let i = 0; i < 5000; i ++ ) {
   var newMaterial = new THREE.MeshStandardMaterial({
-      color: 0x6E5929
+      color: 0xFA962E
     });
   const loader = new GLTFLoader().load(
     "assets/teddybear.glb", // comment this line out and un comment the line below to swithc models
@@ -198,9 +201,9 @@ function init() {
       // set position and scale
       mesh = gltf.scene;
       //mesh.position.set(10, 10, 30);
-      mesh.position.x = Math.floor(Math.random() * 80 - 10) * 20;
-      mesh.position.y = Math.floor(Math.random() * 80) * 20 + 10;
-      mesh.position.z = Math.floor(Math.random() * 80 - 10) * 20;
+      mesh.position.x = Math.floor(Math.random() * 180 - 10) * 20;
+      mesh.position.y = Math.floor(Math.random() * 80) * 5 + 10;
+      mesh.position.z = Math.floor(Math.random() * 180 - 10) * 20;
       mesh.rotation.set(0, 0, 0);
       mesh.scale.set(10,10, 10); // <-- change this to (1, 1, 1) for photogrammetery model
       // Add model to scene
@@ -212,11 +215,12 @@ function init() {
     }
   );
 }
+for ( let i = 0; i < 5000; i ++ ) {
   var newMaterial2 = new THREE.MeshStandardMaterial({
-      color: 0x775939
+      color: 0x97C0FC
     });
   const loader2 = new GLTFLoader().load(
-    "assets/teddybear.glb", // comment this line out and un comment the line below to swithc models
+    "assets/stuffdog.glb", // comment this line out and un comment the line below to swithc models
     //"./assets/gourd_web.glb", //<-- photogrammetery model
     function(gltf) {
       // Scan loaded model for mesh and apply defined material if mesh is present
@@ -227,10 +231,10 @@ function init() {
       });
       // set position and scale
       mesh2 = gltf.scene;
-      mesh2.position.x = Math.floor(Math.random() * 20 - 10) * 20;
-      mesh2.position.y = Math.floor(Math.random() * 20) * 20 + 10;
-      mesh2.position.z = Math.floor(Math.random() * 20 - 10) * 20;
-      mesh2.rotation.set(0, 0, 0);
+      mesh2.position.x = Math.floor(Math.random() * 180 - 10) * 20;
+      mesh2.position.y = Math.floor(Math.random() * 80) * 5 + 10;
+      mesh2.position.z = Math.floor(Math.random() * 180 - 10) * 20;
+      mesh2.rotation.set(0.349066, 0, 0);
       mesh2.scale.set(10,10, 10); // <-- change this to (1, 1, 1) for photogrammetery model
       // Add model to scene
       scene.add(mesh2);
@@ -240,6 +244,7 @@ function init() {
       console.error(error);
     }
   );
+}
   // Define Rendered and html document placement
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -304,7 +309,8 @@ function animate() {
       canJump = true;
     }
   }
-
+  const timer = Date.now() - start;
+   mesh.rotation.y = timer * 0.0003
   prevTime = time;
 
   renderer.render(scene, camera);
