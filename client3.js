@@ -7,7 +7,7 @@
 import * as THREE from "./build/three.module.js";
 // Import pointer lock controls
 import { PointerLockControls } from "./src/PointerLockControls.js";
-
+import { GLTFLoader } from "./src/GLTFLoader.js";
 // Establish variables
 let camera, scene, renderer, controls;
 
@@ -25,6 +25,8 @@ const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
 const vertex = new THREE.Vector3();
 const color = new THREE.Color();
+var mesh;
+var mesh2;
 
 // Initialization and animation function calls
 init();
@@ -164,7 +166,7 @@ function init() {
   const colorsFloor = [];
 
   for (let i = 0, l = position.count; i < l; i++) {
-    color.setHSL(Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75);
+    color.setHSL(Math.random() * 1.3 + 1.5, 0.75, Math.random() * 0.25 + 0.75);
     colorsFloor.push(color.r, color.g, color.b);
   }
 
@@ -179,46 +181,65 @@ function init() {
 
   // Insert completed floor into the scene
   scene.add(floor);
-
-
-  // Generate objects (cubes)
-  const boxGeometry = new THREE.BoxGeometry(20, 20, 20).toNonIndexed();
-
-  position = boxGeometry.attributes.position;
-  const colorsBox = [];
-
-  for (let i = 0, l = position.count; i < l; i++) {
-    color.setHSL(Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75);
-    colorsBox.push(color.r, color.g, color.b);
-  }
-
-  boxGeometry.setAttribute(
-    "color",
-    new THREE.Float32BufferAttribute(colorsBox, 3)
-  );
-
-  for (let i = 0; i < 500; i++) {
-    const boxMaterial = new THREE.MeshPhongMaterial({
-      specular: 0xffffff,
-      flatShading: true,
-      vertexColors: true
+  for ( let i = 0; i < 500; i ++ ) {
+  var newMaterial = new THREE.MeshStandardMaterial({
+      color: 0x6E5929
     });
-    boxMaterial.color.setHSL(
-      Math.random() * 0.2 + 0.5,
-      0.75,
-      Math.random() * 0.25 + 0.75
-    );
-
-    const box = new THREE.Mesh(boxGeometry, boxMaterial);
-    box.position.x = Math.floor(Math.random() * 20 - 10) * 20;
-    box.position.y = Math.floor(Math.random() * 20) * 20 + 10;
-    box.position.z = Math.floor(Math.random() * 20 - 10) * 20;
-
-    // Insert completed boxes into the scene
-    scene.add(box);
-    objects.push(box);
-  }
-
+  const loader = new GLTFLoader().load(
+    "assets/teddybear.glb", // comment this line out and un comment the line below to swithc models
+    //"./assets/gourd_web.glb", //<-- photogrammetery model
+    function(gltf) {
+      // Scan loaded model for mesh and apply defined material if mesh is present
+      gltf.scene.traverse(function(child) {
+        if (child.isMesh) {
+          child.material = newMaterial;
+        }
+      });
+      // set position and scale
+      mesh = gltf.scene;
+      //mesh.position.set(10, 10, 30);
+      mesh.position.x = Math.floor(Math.random() * 80 - 10) * 20;
+      mesh.position.y = Math.floor(Math.random() * 80) * 20 + 10;
+      mesh.position.z = Math.floor(Math.random() * 80 - 10) * 20;
+      mesh.rotation.set(0, 0, 0);
+      mesh.scale.set(10,10, 10); // <-- change this to (1, 1, 1) for photogrammetery model
+      // Add model to scene
+      scene.add(mesh);
+    },
+    undefined,
+    function(error) {
+      console.error(error);
+    }
+  );
+}
+  var newMaterial2 = new THREE.MeshStandardMaterial({
+      color: 0x775939
+    });
+  const loader2 = new GLTFLoader().load(
+    "assets/teddybear.glb", // comment this line out and un comment the line below to swithc models
+    //"./assets/gourd_web.glb", //<-- photogrammetery model
+    function(gltf) {
+      // Scan loaded model for mesh and apply defined material if mesh is present
+      gltf.scene.traverse(function(child) {
+        if (child.isMesh) {
+          child.material = newMaterial2;
+        }
+      });
+      // set position and scale
+      mesh2 = gltf.scene;
+      mesh2.position.x = Math.floor(Math.random() * 20 - 10) * 20;
+      mesh2.position.y = Math.floor(Math.random() * 20) * 20 + 10;
+      mesh2.position.z = Math.floor(Math.random() * 20 - 10) * 20;
+      mesh2.rotation.set(0, 0, 0);
+      mesh2.scale.set(10,10, 10); // <-- change this to (1, 1, 1) for photogrammetery model
+      // Add model to scene
+      scene.add(mesh2);
+    },
+    undefined,
+    function(error) {
+      console.error(error);
+    }
+  );
   // Define Rendered and html document placement
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
